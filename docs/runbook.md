@@ -1,15 +1,34 @@
-# Incident runbook
+# Incident Runbook — TravelMate AI v0.2.0
+
+## Scope
+
+This runbook describes how to handle failures in the TravelMate AI MVP. The current app records agent statuses, durations, errors, retry events, and correlation IDs. It does not send automatic alerts or provide an automatic Kill Switch.
 
 ## Severity
-- Low: one specialist fails but a safe fallback is returned.
-- Medium: a required specialist repeatedly fails; workflow health is DEGRADED.
-- High: suspected secret exposure or unsafe output; stop using the affected key, rotate it, preserve sanitized logs, and notify the project owner.
 
-## Example: Budget Agent failure
-1. Identify: dashboard shows `budget: FAILED`, health `DEGRADED`, correlation ID, two attempts.
-2. Contain: keep the failed budget marked unavailable; do not represent it as a verified quote.
-3. Diagnose: use correlation ID to inspect event names, durations, error code and attempt count. Logs exclude raw exceptions and secrets.
-4. Recover: fix the node or dependency, rerun tests, and provide manual budget review if needed.
-5. Resolve: document cause and fix, close incident only after a successful rerun.
+- **Low:** one agent fails, but a visible fallback is returned.
+- **Medium:** a required agent fails after retry; workflow health becomes `DEGRADED`.
+- **High:** suspected secret exposure or unsafe output. Stop using the affected service or key, rotate the key, and notify the project owner.
 
-For demonstration, check “Simuler une panne du Budget Agent” before submitting. This is an intentional test fault, not a live production incident.
+## Incident response
+
+1. **Detection:** check the dashboard for `FAILED`, `DEGRADED`, or an incident message.
+2. **Containment:** do not rely on the failed agent’s result. For a local demo, stop the app with `Ctrl+C` if output appears unsafe. No automatic Kill Switch is implemented.
+3. **Diagnosis:** use the correlation ID to review agent statuses, durations, retry events, and sanitized error codes. Never put API keys or database connection strings in logs or screenshots.
+4. **Remediation:** check the responsible agent and its configuration; make one targeted fix, then run the tests.
+5. **Recovery:** submit a new request. Confirm the required agents succeed and the workflow returns to `HEALTHY`.
+6. **Review:** record the cause and fix. Keep the incident open until a successful rerun is confirmed.
+
+## Demonstration: simulated Budget Agent failure
+
+1. Select “Simuler une panne du Budget Agent” in the dashboard.
+2. Submit a sample trip request.
+3. Confirm `budget: FAILED`, workflow health `DEGRADED`, two attempts, and a visible fallback.
+4. Explain that this is a deliberate classroom simulation, not a real production incident.
+
+## Current limitations
+
+- Alerts and human escalation are manual.
+- There is no automatic rollback or Kill Switch.
+- Budget allocations are not verified market prices.
+- The app has no live weather, transport, booking, or availability source.
