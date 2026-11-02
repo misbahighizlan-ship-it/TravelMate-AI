@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: travelmate-ai
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OLLAMA_API_KEY
+        sync: false
+      - key: OLLAMA_MODEL
+        value: gemma4:31b
+      - key: OLLAMA_BASE_URL
+        value: https://ollama.com/v1
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DATABASE
+        value: travelmate_ai
+      - key: MONGODB_COLLECTION
+        value: trip_runs
